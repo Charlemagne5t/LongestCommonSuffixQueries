@@ -18,7 +18,7 @@ public class Solution {
             int index = trie.endsWith(query) == -1 ? shortestIndex : trie.endsWith(query);
             res[i] = index;
         }
-
+        System.out.println(Arrays.toString(res));
         return res;
     }
 }
@@ -33,8 +33,12 @@ class Trie {
         int wordLength = word.length();
         TrieNode temp = root;
         for (int i = wordLength - 1; i >= 0; i--) {
+            if(temp.children.containsKey(word.charAt(i))){
+                temp.indexesGoThrough.offer(new int[]{word.length(), index});
+            }
             if(!temp.children.containsKey(word.charAt(i))){
                 TrieNode node = new TrieNode(word.charAt(i));
+                temp.indexesGoThrough.offer(new int[]{word.length(), index});
                 temp.children.put(word.charAt(i), node);
             }
             temp = temp.children.get(word.charAt(i));
@@ -43,7 +47,6 @@ class Trie {
                     temp.isTerminal = true;
                     temp.index = index;
                 }
-
             }
         }
 
@@ -69,29 +72,14 @@ class Trie {
         if(temp.isTerminal){
             return temp.index;
         }
-
-        int idx = Integer.MAX_VALUE;
-        Queue<TrieNode> q = new LinkedList<>();
-        q.addAll(temp.children.values());
-        boolean found = false;
-        while (!q.isEmpty() && !found){
-            int size = q.size();
-            for (int i = 0; i < size; i++) {
-                TrieNode cur = q.poll();
-                if(cur.isTerminal){
-                    found = true;
-                    idx = Math.min(idx, cur.index);
-                }
-                q.addAll(cur.children.values());
-            }
-        }
-        return idx;
+        return temp.indexesGoThrough.peek()[1];
     }
 }
 
 class TrieNode{
     char value;
     Map<Character, TrieNode> children = new HashMap<>();
+    PriorityQueue<int[]> indexesGoThrough = new PriorityQueue<>(Comparator.comparingInt((int[]a) -> a[0]).thenComparing((int[]a) -> a[1]));
     boolean isTerminal;
     int index = -1;
 
