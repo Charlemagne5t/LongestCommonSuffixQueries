@@ -19,5 +19,13 @@ public class SolutionTest {
         int[] actual = new Solution().stringIndices(wordsContainer, wordsQuery);
         Assert.assertArrayEquals(expected, actual);
     }
+    @Test
+    public void test3() {
+        String[] wordsContainer = {"abcde", "abcde"};
+        String[] wordsQuery = {"abcde", "bcde", "cde", "de", "e"};
+        int[] expected = {0, 0, 0, 0, 0};
+        int[] actual = new Solution().stringIndices(wordsContainer, wordsQuery);
+        Assert.assertArrayEquals(expected, actual);
+    }
 
 }
